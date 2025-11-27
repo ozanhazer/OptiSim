@@ -12,8 +12,26 @@ How to run?
 
 Easiest way is via Eric IDE. Just run the project file.
 
-For execution the following site-packages are necessary:
-Python 3.4.3 - PyQt 5.5.1 - Numpy 1.11 - Scipy 0.18.1 - Matplotlib 1.5.0 - Colorpy 0.1.0 for Python 3
+Create a virtual env:
+`python3 -m venv venv`
+
+Activate virtual env:
+
+```bash
+# Mac, Linux, etc.
+venv/bin/activate
+# Windows
+venv\Scripts\Activate.ps1
+```
+
+Install dependencies:
+
+`pip3 install PyQt5 Numpy Scipy Matplotlib Colorpy numexpr`
+
+Run:
+
+`python3 main.py`
+
 
 What else?
 ==========
