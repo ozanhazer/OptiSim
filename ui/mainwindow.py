@@ -44,7 +44,7 @@ from .fitting_thickness import FittingThicknessDlg
 from .fitting_diffusion import FittingDiffusion
 from .fitting_advanced import FittingAdvancedDlg
 from .extractbandgap import ExtractBandgapDlg
-from .color import ColorDlg
+#from .color import ColorDlg
 
 import strings
 
@@ -149,7 +149,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         
         wavelengthRange = [350, 1300, 5]
 
-        MaterialDBPath = os.getcwd() + "\\materialDB"
+        MaterialDBPath = os.path.join(os.getcwd(), "materialDB")
         Spectrum = "AM1.5G_ed2.9.dat"
         #self.currentworkingdirectory = 
         #load Material database
@@ -572,9 +572,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.sroughGroup.setChecked(self.currentLayer.srough)
         self.sroughThicknessEdit.setValue(self.currentLayer.sroughThickness)
         
-        self.hazeRSlider.setValue(self.currentLayer.sroughHazeR*100)
+        self.hazeRSlider.setValue(int(self.currentLayer.sroughHazeR*100))
         self.hazeRLabel.setText(str(self.currentLayer.sroughHazeR))
-        self.hazeTSlider.setValue(self.currentLayer.sroughHazeT*100)
+        self.hazeTSlider.setValue(int(self.currentLayer.sroughHazeT*100))
         self.hazeTLabel.setText(str(self.currentLayer.sroughHazeT))
     
     def fillCriSourceWidget(self):
@@ -845,7 +845,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSlot()
     def on_criFilePathButton_clicked(self):
         #TODO: make LineEdit editable for costum path input
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'select a file containing the nk or alpha data', os.getcwd()+'\\materialDB')
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'select a file containing the nk or alpha data', os.path.join(os.getcwd(), "materialDB"))
         if fileName:
             if not self.currentLayer.criFile['path'] == fileName:
                 self.criFileEdit.setText(fileName)
@@ -1083,7 +1083,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         path = self.settings['MaterialDBPath']
         if not os.path.isdir(path):
             self.warning('Path to material database does not exist! Default directory is choosen. Some of your definitions may be changed.')
-            path = os.getcwd() + "\\materialDB"
+            path = os.path.join(os.getcwd(), "materialDB")
         included_extenstions = ['dat']
         self.MaterialFiles = [fn for fn in os.listdir(path) if any([fn.endswith(ext) for ext in included_extenstions])]
         self.Materials = []
@@ -1766,11 +1766,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 # check if path of materialDB is available on machine
                 if not os.path.isdir(self.settings['MaterialDBPath']):
                     self.warning('Could not find path of material data base: {}\nPlease select correct directory.'.format(self.settings['MaterialDBPath']))
-                    DirName = QtWidgets.QFileDialog.getExistingDirectory(self, 'select a folder containing the nk files', os.getcwd()+'\\materialDB')
+                    DirName = QtWidgets.QFileDialog.getExistingDirectory(self, 'select a folder containing the nk files', os.path.join(os.getcwd(), "materialDB"))
                     if DirName:
                         self.settings['MaterialDBPath'] = DirName
                     else:
-                        self.settings['MaterialDBPath'] = os.getcwd()+'\\materialDB'
+                        self.settings['MaterialDBPath'] = os.path.join(os.getcwd(), "materialDB")
                 self.loadMaterialDB()
                 defaults = u.load()
                 # check for old sclaar value from release 5.3 (costfunc values etc)

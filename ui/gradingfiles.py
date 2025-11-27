@@ -76,7 +76,7 @@ class GradingFilesDlg(QDialog, Ui_Dialog):
             self.updateLayout()
 
     def selectPath(self):
-        fileName,  _= QFileDialog.getOpenFileName(self, 'select a file containing the nk data', os.getcwd()+'\\materialDB')
+        fileName,  _= QFileDialog.getOpenFileName(self, 'select a file containing the nk data', os.path.join(os.getcwd(), "materialDB"))
         if fileName:
             PB = self.sender()
             idx = self.fileLayout.indexOf(PB)

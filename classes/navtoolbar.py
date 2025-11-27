@@ -2,7 +2,8 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from matplotlib.backends.backend_qt4 import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+
 import qrc_resource
 
 class NavToolBar(NavigationToolbar2QT):
@@ -23,7 +24,7 @@ class NavToolBar2(NavigationToolbar2QT):
         Constructor of NavToolBar
 
         :param canvas: the matplotlib canvas
-        :type canvas: matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg
+        :type canvas: matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg
         :param parent: the parent QWidget
         :type parent: PyQt4.QtGui.QWidget
         :param coordinates: boolean coordinates

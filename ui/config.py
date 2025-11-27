@@ -107,7 +107,7 @@ class ConfigDlg(QDialog, Ui_Dialog):
         
     @pyqtSlot()
     def on_pathButton_clicked(self):
-        DirName = QFileDialog.getExistingDirectory(self, 'select a folder containing the nk files', os.getcwd()+'\\materialDB')
+        DirName = QFileDialog.getExistingDirectory(self, 'select a folder containing the nk files', os.path.join(os.getcwd(), "materialDB"))
         if DirName:
             self.pathEdit.setText(DirName)
             self.settings['MaterialDBPath'] = DirName
