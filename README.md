@@ -19,7 +19,7 @@ Activate virtual env:
 
 ```bash
 # Mac, Linux, etc.
-venv/bin/activate
+source venv/bin/activate
 # Windows
 venv\Scripts\Activate.ps1
 ```
@@ -53,3 +53,4 @@ Thanks to:
 
 Volker Lorrmann for first ideas, Steven Byrnes' python tmm package for giving input especially for angle dependency, Mark Knees for python package Colorpy I took some lines from, 
 developer of ERIC IDE, and many more ... 
+
