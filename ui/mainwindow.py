@@ -2189,7 +2189,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowModified(self.dirty)
 
     def onProgress(self, i):
-        self.progressBar.setValue(i)
+        self.progressBar.setValue(int(i))
 
     def updateFileMenu(self):
         #TODO: icon, action not running
