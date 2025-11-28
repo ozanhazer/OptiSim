@@ -16,8 +16,8 @@ def snell(cri1, cri2, theta1):
     """
     calculates the (complex) angle per wavelength of the light propagation by Snell's law
     """
-    return sp.arcsin(np.real_if_close(cri1*np.sin(theta1) / cri2))
-    
+    return np.arcsin(np.real_if_close(cri1*np.sin(theta1) / cri2))
+
     
 class LayerStack:
     def __init__(self, stackname, stack, settings, getCRICallback):
