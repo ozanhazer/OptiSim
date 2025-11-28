@@ -136,19 +136,19 @@ class ConfigDlg(QDialog, Ui_Dialog):
         self.settings['angle'] = p0
  
     def fillSpectra(self):
-        path = os.getcwd() + '\\spectra'
+        path = os.path.join(os.getcwd(), 'spectra')
         included_extenstions = ['dat']
         self.spectraFiles = [fn for fn in os.listdir(path) if any([fn.endswith(ext) for ext in included_extenstions])]
         self.spectra = []
         for i, Mat in enumerate(self.spectraFiles):
             self.spectra.append(Mat.replace('.dat', ''))
-        spectraFilePaths = [(path + '\\' + i) for i in self.spectraFiles]
+        spectraFilePaths = [os.path.join(path, i) for i in self.spectraFiles]
         self.spectraDB = dict(zip(self.spectra,  spectraFilePaths))
         self.spectrumCB.clear()
         self.spectrumCB.addItems(self.spectra)
-        
+    
         for name, filepath in self.spectraDB.items():
-            if filepath == path + '\\' + self.settings['spectrum']:
+            if filepath == os.path.join(path, self.settings['spectrum']):
                 indexStr = name
         index = self.spectrumCB.findText(indexStr)
         self.spectrumCB.setCurrentIndex(index)

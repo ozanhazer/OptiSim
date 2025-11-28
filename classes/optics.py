@@ -244,7 +244,7 @@ class Optics:
         c = 2.99792458e8 #m/s speed of light
         q = 1.602176e-19 #C electric chargeq 
         self.spectrumFile = self.settings['spectrum']
-        SpectrumFile = os.getcwd() + '\\spectra\\' + self.spectrumFile
+        SpectrumFile = os.path.join(os.getcwd(), 'spectra', self.spectrumFile)
         logging.info('\tload spectrum file {}...'.format(SpectrumFile))
         data = np.loadtxt(SpectrumFile, comments='>')
         

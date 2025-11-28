@@ -170,10 +170,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         ])
         
         self.references = dict([    
-                        ('R reference', [os.getcwd() + '\\references\\R.dat', 1]), 
-                        ('T reference', ['', 0]), 
-                        ('EQE reference', [os.getcwd() + '\\references\\EQE.dat', 1]), 
-                        ('psi reference', ['', 0]), 
+                        ('R reference', [os.path.join(os.getcwd(), 'references', 'R.dat'), 1]),
+                        ('T reference', ['', 0]),
+                        ('EQE reference', [os.path.join(os.getcwd(), 'references', 'EQE.dat'), 1]),
+                        ('psi reference', ['', 0]),
                         ('delta reference', ['', 0])
                         ])
         
@@ -1089,7 +1089,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.Materials = []
         for i, Mat in enumerate(self.MaterialFiles):
             self.Materials.append(Mat.replace('.dat', ''))
-        criFilePaths = [(self.settings['MaterialDBPath'] + '\\' + i) for i in self.MaterialFiles]
+        criFilePaths = [os.path.join(self.settings['MaterialDBPath'], i) for i in self.MaterialFiles]
         self.MaterialDB = dict(zip(self.Materials,  criFilePaths))
         self.criDBList.clear()
         self.criDBList.addItems(sorted(self.Materials))

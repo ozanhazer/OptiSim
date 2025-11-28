@@ -45,31 +45,31 @@ class ReferencesDlg(QDialog, Ui_Dialog):
 
     @pyqtSlot()
     def on_R_PB_clicked(self):
-        fileName,  _ = QFileDialog.getOpenFileName(self, 'select a file with reflection data', os.getcwd()+'\\references')
+        fileName,  _ = QFileDialog.getOpenFileName(self, 'select a file with reflection data', os.path.join(os.getcwd(), 'references'))
         if fileName:
             self.R_LE.setText(fileName)
 
     @pyqtSlot()
     def on_T_PB_clicked(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with transmission data', os.getcwd()+'\\references')
+        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with transmission data', os.path.join(os.getcwd(), 'references'))
         if fileName:
             self.T_LE.setText(fileName)
 
     @pyqtSlot()
     def on_EQE_PB_clicked(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with EQE data', os.getcwd()+'\\references')
+        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with EQE data', os.path.join(os.getcwd(), 'references'))
         if fileName:
             self.EQE_LE.setText(fileName)
 
     @pyqtSlot()
     def on_psi_PB_clicked(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with psi data', os.getcwd()+'\\references')
+        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with psi data', os.path.join(os.getcwd(), 'references'))
         if fileName:
             self.psi_LE.setText(fileName)
 
     @pyqtSlot()
     def on_delta_PB_clicked(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with delta data', os.getcwd()+'\\references')
+        fileName, _ = QFileDialog.getOpenFileName(self, 'select a file with delta data', os.path.join(os.getcwd(), 'references'))
         if fileName:
             self.delta_LE.setText(fileName)
 
