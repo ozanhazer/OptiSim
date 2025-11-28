@@ -1,6 +1,6 @@
-'''
+"""
 Class for stack of layers as used for calculation
-'''
+"""
 from classes.layer import Layer
 
 import time
@@ -13,15 +13,15 @@ from numpy import cos #, inf, zeros, array, exp, conj, nan, isnan
 from scipy.interpolate import interp1d
 
 def snell(cri1, cri2, theta1):
-    '''
+    """
     calculates the (complex) angle per wavelength of the light propagation by Snell's law
-    '''
+    """
     return sp.arcsin(np.real_if_close(cri1*np.sin(theta1) / cri2))
     
     
 class LayerStack:
     def __init__(self, stackname, stack, settings, getCRICallback):
-        '''
+        """
         input:
         stack class with
         name
@@ -30,11 +30,11 @@ class LayerStack:
         cri file / constant
         grading ??
         wavelength range
-        
+
         output:
         modified layerstack including layer matrices
-        
-        '''
+
+        """
         logging.info('\nstart creating final stack...')
         layers = []
         for i in stack:
@@ -216,7 +216,7 @@ class LayerStack:
                 prev_k = self.layersequence[index - 1].k
             if index == len(self.layersequence):
                 next_n = np.ones(len(wvl))
-                next_k = np.zeos(len(wvl))
+                next_k = np.zeros(len(wvl))
             else:
                 next_n = self.layersequence[index + 1].n
                 next_k = self.layersequence[index + 1].k
@@ -281,15 +281,15 @@ class LayerStack:
             layer.alpha = 4*np.pi*layer.k/wvl #*1e-7
             # make angle of lightwave in each layer
             if i == 0:
-                cri1 = np.ones((len(wvl)), np.complex)
+                cri1 = np.ones((len(wvl)), np.complex128)
                 layer.theta = snell(cri1, layer.cri, self.theta0)
             else:
                 layer.theta = snell(self.layersequence[i-1].cri, layer.cri, self.layersequence[i-1].theta)
             #TODO: what about the last interface?
             layer.xi = 2 * np.pi * layer.cri * cos(layer.theta) / wvl
             # layer matrix according to Egn 6 Pettersson
-            layer.LayerMatrix = np.zeros((len(wvl), 2, 2), np.complex)
-            layer.LayerMatrixInc = np.zeros((len(wvl), 2, 2), np.complex)
+            layer.LayerMatrix = np.zeros((len(wvl), 2, 2), np.complex128)
+            layer.LayerMatrixInc = np.zeros((len(wvl), 2, 2), np.complex128)
             
             EXP = 1j * layer.xi * layer.thickness
             

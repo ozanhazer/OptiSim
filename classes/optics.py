@@ -1,6 +1,6 @@
-'''
+"""
 Class for stack of layers as used for calculation
-'''
+"""
 
 import os
 import logging
@@ -14,9 +14,9 @@ from scipy import integrate
 from classes.errors import *
 
 def snell(cri1, cri2, theta1):
-    '''
+    """
     calculates the (complex) angle per wavelength of the light propagation by Snell's law
-    '''
+    """
     return sp.arcsin(np.real_if_close(cri1*np.sin(theta1) / cri2))
     
 def r_ij(polarization, rough, d_rough, wvl, cri_i, cri_j, th_i, th_j):
@@ -59,47 +59,47 @@ def t_ij(polarization, rough, d_rough, wvl, cri_i, cri_j, th_i, th_j):
 class Optics:
     
     def __init__(self, stackname, layerstack, references, settings):
-        '''
+        """
         Class for calculating the optics of a layerstack
-        
+
         input:
         layer names
         layer thicknesses
         layer cri
-        
-        
+
+
         Output:
             curves:
                 spectra:
                 + stack A,R,T
                     - absorption
                     - reflection
-                    - transmission                
+                    - transmission
                 + absorption (layerwise)
                     - layer 1
                     - layer 2
-                    - layer 3 
+                    - layer 3
                     - ...
                 + quantum efficiency
-                    - internal 
+                    - internal
                     - external
-                
+
                 profile:
                 + light intensity
                 + optical generation
                 + collected generation
-                
+
                 2D:
                 + E-field intensity
                 + Generation
-                
+
             scalars:
                 absorbance - relative total absorption
                 relfectance - relative total reflection
                 transmittance - relative total transmission
                 total generation
-                
-        '''
+
+        """
        
     
         ''' create dictionary of available plots including lists of 
@@ -285,7 +285,7 @@ class Optics:
         '''
         logging.info('\tcreate interface matrices for all layers...')
         #first interface Air/layer1
-        cri_i = np.ones((len(self.wavelength)), np.complex)
+        cri_i = np.ones((len(self.wavelength)), np.complex128)
 
         t_jk = t_ij(self.pol, self.rough, self.LayerResults[self.names[0]].sroughThickness, self.wavelength, cri_i, self.LayerResults[self.names[0]].cri,
                     self.layerstack.theta0, self.LayerResults[self.names[0]].theta)
@@ -297,8 +297,8 @@ class Optics:
                      self.LayerResults[self.names[0]].theta, self.layerstack.theta0)
                     
 
-        self.firstInterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex)
-        self.firstInterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex)
+        self.firstInterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+        self.firstInterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex128)
         
         if self.LayerResults[self.names[0]].srough:
             hazeR = self.LayerResults[self.names[0]].sroughHazeR
@@ -331,8 +331,8 @@ class Optics:
                 t_kj = t_ij(self.pol, self.rough, layer2.sroughThickness, self.wavelength, layer2.cri, layer1.cri, layer2.theta, layer1.theta)
                 r_kj = r_ij(self.pol, self.rough, layer2.sroughThickness, self.wavelength, layer2.cri, layer1.cri, layer2.theta, layer1.theta)
                 
-                layer1.InterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex)
-                layer1.InterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex)
+                layer1.InterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+                layer1.InterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex128)
                 
                 if layer2.srough:
                     hazeR = layer2.sroughHazeR
@@ -365,8 +365,8 @@ class Optics:
                 t_kj = t_ij(self.pol, 0, 0, self.wavelength, cri_i, layer1.cri, self.theta_out, layer1.theta)
                 r_kj = r_ij(self.pol, 0, 0, self.wavelength, cri_i, layer1.cri, self.theta_out, layer1.theta)
                 
-                layer1.InterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex)
-                layer1.InterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex)
+                layer1.InterfaceMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+                layer1.InterfaceMatrixInc = np.zeros((len(self.wavelength), 2, 2), np.complex128)
                 # coherent
                 layer1.InterfaceMatrix[:, 0, 0] = layer1.InterfaceMatrix[:, 1, 1] = 1 / t_jk
                 layer1.InterfaceMatrix[:, 0, 1] = layer1.InterfaceMatrix[:, 1, 0] = r_jk / t_jk
@@ -391,15 +391,15 @@ class Optics:
         logging.info('\tcreate partial system matrices for each layer...')
         
         for j, key in enumerate(self.names):
-            self.LayerResults[key].PSI_Field = np.zeros((len(self.wavelength), 2, 2), np.complex)
-            self.LayerResults[key].PSO_Field = np.zeros((len(self.wavelength), 2, 2), np.complex)
-            self.LayerResults[key].PSI_Int = np.zeros((len(self.wavelength), 2, 2), np.complex)
-            self.LayerResults[key].PSO_Int = np.zeros((len(self.wavelength), 2, 2), np.complex)
+            self.LayerResults[key].PSI_Field = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+            self.LayerResults[key].PSO_Field = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+            self.LayerResults[key].PSI_Int = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+            self.LayerResults[key].PSO_Int = np.zeros((len(self.wavelength), 2, 2), np.complex128)
             
-        self.SystemFieldMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex) # complete coherent (no "thick") --> required for Ellipsometry
-        self.SystemIntMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex) # complete incoherent (all "thick") 
+        self.SystemFieldMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128) # complete coherent (no "thick") --> required for Ellipsometry
+        self.SystemIntMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128) # complete incoherent (all "thick")
         
-        self.SystemMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex) # mixture of both - coherent and incoherent - as required
+        self.SystemMatrix = np.zeros((len(self.wavelength), 2, 2), np.complex128) # mixture of both - coherent and incoherent - as required
         
         self.WhatComesOut = np.zeros(len(self.wavelength))
         
@@ -469,7 +469,7 @@ class Optics:
                 #S11 = part[1, 1]
                 detS = np.linalg.det(part)
                 
-                partIntensity = np.zeros((2, 2), np.complex)
+                partIntensity = np.zeros((2, 2), np.complex128)
                 
                 partIntensity[0, 0] = np.abs(S00)**2
                 partIntensity[0, 1] = - np.abs(S01)**2
@@ -525,7 +525,7 @@ class Optics:
             
             self.WhatComesOut[wvl] = np.abs(1 / self.SystemMatrix[wvl, 0, 0])
             
-            # go through all coherent layers and add PSI and PSO from incoherent parts 
+            # go through all coherent layers and add PSI and PSO from incoherent parts
             for k, name in enumerate(self.names):
                 if self.LayerResults[name].thick:
                     pass
@@ -804,7 +804,7 @@ class Optics:
            
     
     def setLayerPartialSystemMatrices(self):
-        '''
+        """
         partial system transfer matrix for field from top to layer j:
              j - 1
             ------
@@ -812,20 +812,20 @@ class Optics:
         Sin=[|  | I_(v-1) L_v] I_(j-1),j
              |  |
              v = 1
-                 
+
         partial transfer matrix for field from layer j to bottom (m):
               m
             ------
              |  |
        Sout=[|  | I_(v-1) L_v] I_(m,m+1)
              |  |
-            v =j+1 
-            
-        for thick layers: Sin and Sout are Intensity matrices    
-        '''
+            v =j+1
+
+        for thick layers: Sin and Sout are Intensity matrices
+        """
         for j, key in enumerate(self.names):
-            self.LayerResults[key].PartSysMatIn = np.zeros((len(self.wavelength), 2, 2), np.complex)
-            self.LayerResults[key].PartSysMatOut = np.zeros((len(self.wavelength), 2, 2), np.complex)
+            self.LayerResults[key].PartSysMatIn = np.zeros((len(self.wavelength), 2, 2), np.complex128)
+            self.LayerResults[key].PartSysMatOut = np.zeros((len(self.wavelength), 2, 2), np.complex128)
             
             for wvl in range(len(self.wavelength)):
                 # first interface
@@ -851,8 +851,8 @@ class Optics:
     
     def calcEllipsometry(self):
         logging.info('\tcalculate ellipsometric angles...')
-        rs = np.zeros((len(self.wavelength)), np.complex)
-        rp = np.zeros((len(self.wavelength)), np.complex)
+        rs = np.zeros((len(self.wavelength)), np.complex128)
+        rp = np.zeros((len(self.wavelength)), np.complex128)
         
         # calc 's' polarization
         self.pol = 's'
