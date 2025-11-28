@@ -1,6 +1,6 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore
 
-class CollectionWidget(QtGui.QWidget):
+class CollectionWidget(QtWidgets.QWidget):
     '''
     class to display collection function widget to specify 
         - constant collection
@@ -24,13 +24,12 @@ class CollectionWidget(QtGui.QWidget):
         
         
     def setupUi(self):
-        
-        HLayout = QtGui.QHBoxLayout(self)
-        Label = QtGui.QLabel('collection function:')
-        self.Input = QtGui.QLineEdit()
+        HLayout = QtWidgets.QHBoxLayout(self)
+        Label = QtWidgets.QLabel('collection function:')
+        self.Input = QtWidgets.QLineEdit()
         HLayout.addWidget(Label)
         HLayout.addWidget(self.Input)
-        
+
         self.Input.editingFinished.connect(self.uptdateCollection)
     
         self.Input.textChanged.connect(self.checkState)

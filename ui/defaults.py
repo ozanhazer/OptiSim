@@ -4,8 +4,9 @@
 Module implementing DefaultsDlg.
 """
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
 
 from .Ui_defaults import Ui_Dialog
 
