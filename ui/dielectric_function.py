@@ -90,14 +90,14 @@ def KKR(e2, eV):
     e1 = np.zeros(len(eV))
     
     # first element is computed without integrating the first energy value
-    e1[0] = 1 + (2 / np.pi) * integrate.trapz(E[1:-1] * e2[1:-1] / (E[1:-1]**2 - E[0])) * (E[3]-E[2])
+    e1[0] = 1 + (2 / np.pi) * np.trapezoid(E[1:-1] * e2[1:-1] / (E[1:-1]**2 - E[0])) * (E[3]-E[2])
     
-    #e1[-1] = 1 + (2 / np.pi) * integrate.trapz(E[0:-2] * e2[0:-2] / (E[0:-2]**2 - E[-1]))
+    #e1[-1] = 1 + (2 / np.pi) * np.trapezoid(E[0:-2] * e2[0:-2] / (E[0:-2]**2 - E[-1]))
     
     
     for i in range(1, len(E)):
-        e1_part1 = integrate.trapz(E[0:i-1] * e2[0:i-1] / (E[0:i-1]**2 - E[i]**2))
-        e1_part2 = integrate.trapz(E[i+1:-1] * e2[i+1:-1] / (E[i+1:-1]**2 - E[i]**2))
+        e1_part1 = np.trapezoid(E[0:i-1] * e2[0:i-1] / (E[0:i-1]**2 - E[i]**2))
+        e1_part2 = np.trapezoid(E[i+1:-1] * e2[i+1:-1] / (E[i+1:-1]**2 - E[i]**2))
         
         e1[i] = 1 + (2 / np.pi) * (e1_part1 + e1_part2) * (E[3]-E[2])
         

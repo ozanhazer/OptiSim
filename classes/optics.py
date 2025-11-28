@@ -267,7 +267,7 @@ class Optics:
         # current J_wl = N_ph_s_wl * q --> J = sum(J_wl) A/m² = 0.1 mA/cm²
         logging.info('\tcalculate maximum current Jmax = integr(q * N_ph)...')
         self.spectrumCurrent = N_ph_s_wl * q * 0.1
-        self.Jmax = integrate.trapz(self.spectrumCurrent, x=self.wavelength, axis = 0)
+        self.Jmax = np.trapezoid(self.spectrumCurrent, x=self.wavelength, axis=0)
         logging.info('\t--> Jmax is {:.4f} mA/cm^2'.format(self.Jmax))
         
         self.scalars['Jmax (mA/cm²)'] = self.Jmax
@@ -800,7 +800,7 @@ class Optics:
         for key in self.names:
             self.LayerResults[key].I_diffuse = self.LayerResults[key].I_fw_diff_vector - self.LayerResults[key].I_bw_diff_vector 
             self.I_diffuse.extend(self.LayerResults[key].I_diffuse)
-            self.I_diffuse_x.extend(integrate.trapz(self.I_diffuse, x=wvl, axis = 1))
+            self.I_diffuse_x.extend(np.trapezoid(self.I_diffuse, x=wvl, axis = 1))
            
     
     def setLayerPartialSystemMatrices(self):
@@ -952,17 +952,17 @@ class Optics:
             
         lengthWvl = self.wavelength[-1] - self.wavelength[0]
         
-        AnumSys = integrate.trapz(self.AspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
-        RnumSys = integrate.trapz(self.RspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
-        TnumSys = integrate.trapz(self.TspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
+        AnumSys = np.trapezoid(self.AspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
+        RnumSys = np.trapezoid(self.RspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
+        TnumSys = np.trapezoid(self.TspectrumSystem, x = self.wavelength, axis=0) / lengthWvl
         
-#        AnumField = integrate.trapz(self.AspectrumField, x = self.wavelength, axis=0) / lengthWvl
-#        RnumField = integrate.trapz(self.RspectrumField, x = self.wavelength, axis=0) / lengthWvl
-#        TnumField = integrate.trapz(self.TspectrumField, x = self.wavelength, axis=0) / lengthWvl
+#        AnumField = np.trapezoid(self.AspectrumField, x = self.wavelength, axis=0) / lengthWvl
+#        RnumField = np.trapezoid(self.RspectrumField, x = self.wavelength, axis=0) / lengthWvl
+#        TnumField = np.trapezoid(self.TspectrumField, x = self.wavelength, axis=0) / lengthWvl
 #        
-#        AnumInt = integrate.trapz(self.AspectrumInt, x = self.wavelength, axis=0) / lengthWvl
-#        RnumInt = integrate.trapz(self.RspectrumInt, x = self.wavelength, axis=0) / lengthWvl
-#        TnumInt = integrate.trapz(self.TspectrumInt, x = self.wavelength, axis=0) / lengthWvl
+#        AnumInt = np.trapezoid(self.AspectrumInt, x = self.wavelength, axis=0) / lengthWvl
+#        RnumInt = np.trapezoid(self.RspectrumInt, x = self.wavelength, axis=0) / lengthWvl
+#        TnumInt = np.trapezoid(self.TspectrumInt, x = self.wavelength, axis=0) / lengthWvl
         
         self.addPlot({'absorption': self.AspectrumSystem})
         self.addPlot({'reflection': self.RspectrumSystem})
@@ -988,9 +988,9 @@ class Optics:
         #self.scalars['reflectance (mA/cm²)'] = RnumSys * self.Jmax 
         #self.scalars['transmittance (mA/cm²)'] = TnumSys * self.Jmax
         
-        self.scalars['absorbance (mA/cm²)'] = integrate.trapz(self.AspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0) 
-        self.scalars['reflectance (mA/cm²)'] = integrate.trapz(self.RspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0)
-        self.scalars['transmittance (mA/cm²)'] = integrate.trapz(self.TspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0)
+        self.scalars['absorbance (mA/cm²)'] = np.trapezoid(self.AspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0)
+        self.scalars['reflectance (mA/cm²)'] = np.trapezoid(self.RspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0)
+        self.scalars['transmittance (mA/cm²)'] = np.trapezoid(self.TspectrumSystem * self.spectrumCurrent, x = self.wavelength, axis=0)
         
         logging.info('\tcalculation of stack optics finished.')
 #        self.scalars['absorbance incoh(%)'] = AnumInt[0] * 100 #'%.4f' % 
@@ -1036,7 +1036,7 @@ class Optics:
                 EsquareSpecular.extend(self.LayerResults[key].EsquareSpecular)
 
         self.Esquare = np.array(np.abs(Esquare))
-        self.EsquareProfile = integrate.trapz(self.Esquare, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
+        self.EsquareProfile = np.trapezoid(self.Esquare, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
         self.addPlot({'E-field intensity' : self.Esquare}, '2D')
         self.addPlot({'passing light' : self.EsquareProfile}, 'profiles', 'E-field intensity')
         
@@ -1044,8 +1044,8 @@ class Optics:
             self.EsquareDiffuse = np.array(EsquareDiffuse)
             self.EsquareSpecular = np.array(EsquareSpecular)
             
-            self.EsquareProfileDiffuse = integrate.trapz(self.EsquareDiffuse, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
-            self.EsquareProfileSpecular = integrate.trapz(self.EsquareSpecular, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
+            self.EsquareProfileDiffuse = np.trapezoid(self.EsquareDiffuse, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
+            self.EsquareProfileSpecular = np.trapezoid(self.EsquareSpecular, x=self.wavelength, axis=1) / (self.wavelength[-1] - self.wavelength[0]) # TODO: normalize ? or with spectrum ?
             self.addPlot({'passing light diffuse' : self.EsquareProfileDiffuse}, 'profiles', 'E-field intensity')
             self.addPlot({'passing light specular' : self.EsquareProfileSpecular}, 'profiles', 'E-field intensity')
             
@@ -1066,8 +1066,8 @@ class Optics:
             x = self.LayerResults[key].x
             #TODO: Is this the correct formula (compare with LB)
             self.LayerResults[key].absorbedI =  self.LayerResults[key].alpha * self.LayerResults[key].Esquare # * self.LayerResults[key].n --> already applied
-            self.LayerResults[key].absorption = integrate.trapz(self.LayerResults[key].absorbedI, x=x, axis=0) # 
-            self.integrAbsorption[key] = integrate.trapz(self.LayerResults[key].absorption, x=wvl, axis=0)
+            self.LayerResults[key].absorption = np.trapezoid(self.LayerResults[key].absorbedI, x=x, axis=0) #
+            self.integrAbsorption[key] = np.trapezoid(self.LayerResults[key].absorption, x=wvl, axis=0)
             # fill dict with curves while sum up if sublayer is part of graded layer
             if self.LayerResults[key].criSource == 'graded':
                 name = self.LayerResults[key].parentName
@@ -1078,7 +1078,7 @@ class Optics:
             else:
                 absorptionCurves[key] = self.LayerResults[key].absorption
                 
-            self.absorbedIntensity.extend(integrate.trapz(self.LayerResults[key].absorbedI, x=self.wavelength, axis=1))
+            self.absorbedIntensity.extend(np.trapezoid(self.LayerResults[key].absorbedI, x=self.wavelength, axis=1))
                 
         # new loop because all values of integrAbsorption are required
         # calculate scalar values and sum up if layers are graded
@@ -1087,7 +1087,7 @@ class Optics:
         for i, key in enumerate(self.names):
             self.LayerResults[key].relAbsorption = self.integrAbsorption[key] / np.sum(list(self.integrAbsorption.values())) * self.scalars['absorbance (%)']/100
             #self.LayerResults[key].absAbsorption = self.LayerResults[key].relAbsorption * self.Jmax
-            self.LayerResults[key].absAbsorption = integrate.trapz(self.LayerResults[key].absorption * self.spectrumCurrent, x=wvl, axis=0)
+            self.LayerResults[key].absAbsorption = np.trapezoid(self.LayerResults[key].absorption * self.spectrumCurrent, x=wvl, axis=0)
             
             if self.LayerResults[key].criSource == 'graded':
                 name = self.LayerResults[key].parentName
@@ -1123,8 +1123,8 @@ class Optics:
         for key in self.names:
             x = self.LayerResults[key].x
             self.LayerResults[key].collectedI = self.LayerResults[key].absorbedI * self.LayerResults[key].fc[:, np.newaxis]
-            self.LayerResults[key].collected = integrate.trapz(self.LayerResults[key].collectedI, x=x, axis=0) # 
-            integrCollection[key] = integrate.trapz(self.LayerResults[key].collected, x=wvl, axis=0) 
+            self.LayerResults[key].collected = np.trapezoid(self.LayerResults[key].collectedI, x=x, axis=0) #
+            integrCollection[key] = np.trapezoid(self.LayerResults[key].collected, x=wvl, axis=0)
             # fill dict with curves while sum up if sublayer is part of graded layer
             if self.LayerResults[key].criSource == 'graded':
                 name = self.LayerResults[key].parentName
@@ -1144,7 +1144,7 @@ class Optics:
         for i, key in enumerate(self.names):
             self.LayerResults[key].relCollection = integrCollection[key] / np.sum(list(self.integrAbsorption.values())) * self.scalars['absorbance (%)']/100
             #self.LayerResults[key].absCollection = self.LayerResults[key].relCollection * self.Jmax
-            self.LayerResults[key].absCollection = integrate.trapz(self.LayerResults[key].collected * self.spectrumCurrent, x=wvl, axis=0) 
+            self.LayerResults[key].absCollection = np.trapezoid(self.LayerResults[key].collected * self.spectrumCurrent, x=wvl, axis=0)
             if self.LayerResults[key].criSource == 'graded':
                 name = self.LayerResults[key].parentName
                 if name not in relCollection.keys():
@@ -1213,11 +1213,11 @@ class Optics:
             # generation rate per second-cm²-nm-nm at each position and wavelength
             self.LayerResults[key].G_wl_x = self.LayerResults[key].Q * self.wavelength * 1e-13 / (h * c)
             # Exciton generation rate as a function of position/(sec-cm^2-nm)
-            self.LayerResults[key].G_x = integrate.trapz(self.LayerResults[key].G_wl_x, x=wvl, axis = 1)
+            self.LayerResults[key].G_x = np.trapezoid(self.LayerResults[key].G_wl_x, x=wvl, axis = 1)
             
             # how much is oollected
             self.LayerResults[key].el_G_wl_x = self.spectrum * self.LayerResults[key].collectedI * self.wavelength * 1e-13 / (h * c)
-            self.LayerResults[key].el_G_x = integrate.trapz(self.LayerResults[key].el_G_wl_x, x=wvl, axis = 1)
+            self.LayerResults[key].el_G_x = np.trapezoid(self.LayerResults[key].el_G_wl_x, x=wvl, axis = 1)
         
         #self.G_x = np.zeros((len(self.wavelength), 1))
         self.G_wl_x = []
@@ -1237,7 +1237,7 @@ class Optics:
         self.addPlot({'electrical collection (1/cm³s)': self.el_G_x}, 'profiles', 'generation')
         
         # calc current G * q [1/cm^2-nm-s * As]
-        self.generatedCurrent = integrate.trapz(self.el_G_x, x=self.x, axis = 0) * q * 1000 / 1e7
+        self.generatedCurrent = np.trapezoid(self.el_G_x, x=self.x, axis = 0) * q * 1000 / 1e7
         self.scalars['generated current (mA/cm²)'] = self.generatedCurrent
         logging.info('\tcalculation of generation profile finished.')
         
@@ -1268,23 +1268,23 @@ class Optics:
             I_end = Ivector[-1]
             
             self.LayerResults[key].absorbedILB = self.LayerResults[key].alpha * Ivector #self.LayerResults[key].n
-            self.LayerResults[key].absorptionLB = integrate.trapz(self.LayerResults[key].absorbedILB, x=x, axis=0) # 
+            self.LayerResults[key].absorptionLB = np.trapezoid(self.LayerResults[key].absorbedILB, x=x, axis=0) #
             self.LayerResults[key].collectedILB = self.LayerResults[key].absorbedILB * self.LayerResults[key].fc[:, np.newaxis]
-            self.LayerResults[key].collectedLB = integrate.trapz(self.LayerResults[key].collectedILB, x=x, axis=0) # 
+            self.LayerResults[key].collectedLB = np.trapezoid(self.LayerResults[key].collectedILB, x=x, axis=0) #
             
             # for scalars
-            integrAbsorption[key] = integrate.trapz(self.LayerResults[key].absorptionLB, x=wvl, axis=0)
-            integrCollection[key] = integrate.trapz(self.LayerResults[key].collectedLB, x=wvl, axis=0) 
+            integrAbsorption[key] = np.trapezoid(self.LayerResults[key].absorptionLB, x=wvl, axis=0)
+            integrCollection[key] = np.trapezoid(self.LayerResults[key].collectedLB, x=wvl, axis=0)
             
             # total absorption/ collection
             A = A + self.LayerResults[key].absorptionLB
             self.EQE_LB = self.EQE_LB + self.LayerResults[key].collectedLB
             
             self.I_LB.extend(Ivector)
-            self.I_LB_x.extend((integrate.trapz(Ivector, x=wvl, axis = 1) / (wvl[-1] - wvl[0])))
+            self.I_LB_x.extend((np.trapezoid(Ivector, x=wvl, axis = 1) / (wvl[-1] - wvl[0])))
             # how much is oollected
             LB_el_G_wl_x = self.spectrum * self.LayerResults[key].collectedILB * wvl * 1e-13 / (h * c)
-            LB_el_G_x = integrate.trapz(LB_el_G_wl_x, x=wvl, axis = 1)
+            LB_el_G_x = np.trapezoid(LB_el_G_wl_x, x=wvl, axis = 1)
             self.LB_el_G_wl_x.extend(LB_el_G_wl_x * 1e7)
             self.LB_el_G_x.extend(LB_el_G_x * 1e7)
             
@@ -1294,10 +1294,10 @@ class Optics:
         
         # total absorption scalars
         lengthWvl = self.wavelength[-1] - self.wavelength[0]
-        AnumLB = integrate.trapz(A, x = wvl, axis=0) / lengthWvl    #len(wvl)
+        AnumLB = np.trapezoid(A, x = wvl, axis=0) / lengthWvl    #len(wvl)
         self.scalars['absorbance LB (%)'] = AnumLB * 100 #'%.4f' % 
         #self.scalars['absorbance LB (mA/cm²)'] = AnumLB * self.Jmax
-        self.scalars['absorbance LB (mA/cm²)'] = integrate.trapz(A * self.spectrumCurrent, x = wvl, axis=0)
+        self.scalars['absorbance LB (mA/cm²)'] = np.trapezoid(A * self.spectrumCurrent, x = wvl, axis=0)
         
         # new loop because all values of integrAbsorption/collection are required
         # calculate scalar values and sum up if layers are graded
@@ -1310,10 +1310,10 @@ class Optics:
         for key in self.names:    
             self.LayerResults[key].relAbsorptionLB = integrAbsorption[key] / np.sum(list(integrAbsorption.values())) * self.scalars['absorbance LB (%)']/100
             #self.LayerResults[key].absAbsorptionLB = self.LayerResults[key].relAbsorptionLB * self.Jmax
-            self.LayerResults[key].absAbsorptionLB = integrate.trapz(self.LayerResults[key].absorptionLB * self.spectrumCurrent, x = wvl, axis=0)
+            self.LayerResults[key].absAbsorptionLB = np.trapezoid(self.LayerResults[key].absorptionLB * self.spectrumCurrent, x = wvl, axis=0)
             self.LayerResults[key].relCollectionLB = integrCollection[key] / np.sum(list(integrAbsorption.values())) * self.scalars['absorbance LB (%)']/100
             #self.LayerResults[key].absCollectionLB = self.LayerResults[key].relCollectionLB * self.Jmax
-            self.LayerResults[key].absCollectionLB = integrate.trapz(self.LayerResults[key].collectedLB * self.spectrumCurrent, x = wvl, axis=0)
+            self.LayerResults[key].absCollectionLB = np.trapezoid(self.LayerResults[key].collectedLB * self.spectrumCurrent, x = wvl, axis=0)
             # fill dicts with curves while sum up if sublayer is part of graded layer
             if self.LayerResults[key].criSource == 'graded':
                 name = self.LayerResults[key].parentName
